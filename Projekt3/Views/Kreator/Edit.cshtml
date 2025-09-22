@@ -24,6 +24,48 @@
         <input type="url" class="form-control" id="thumbnailUrl" name="ThumbnailUrl" value="@Model.ThumbnailUrl" />
     </div>
 
+    <h4 class="mt-4">Punkty lokacji</h4>
+    @if (Model.PunktyLokacji != null && Model.PunktyLokacji.Any())
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Data pomiaru</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.PunktyLokacji.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <input type="number" step="any" class="form-control"
+                                   name="PunktyLokacji[@i].Latitude"
+                                   value="@Model.PunktyLokacji[i].Latitude" />
+                        </td>
+                        <td>
+                            <input type="number" step="any" class="form-control"
+                                   name="PunktyLokacji[@i].Longitude"
+                                   value="@Model.PunktyLokacji[i].Longitude" />
+                        </td>
+                        <td>
+                            <input type="date" class="form-control"
+                                   name="PunktyLokacji[@i].DataPomiaru"
+                                   value="@Model.PunktyLokacji[i].DataPomiaru.ToString("yyyy-MM-dd")" />
+                        </td>
+                        <input type="hidden" name="PunktyLokacji[@i].Id" value="@Model.PunktyLokacji[i].Id" />
+                        <input type="hidden" name="PunktyLokacji[@i].PokojId" value="@Model.Id" />
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Brak punktów lokacji</p>
+    }
+
     <button type="submit" class="btn btn-success">Zapisz</button>
     <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
 </form>

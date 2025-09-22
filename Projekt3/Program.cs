@@ -2,11 +2,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Projekt3.Data;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseInMemoryDatabase("Projekt3DB"));
+    options.UseSqlite("Data Source=projekt3.db"));
+
+
 
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
