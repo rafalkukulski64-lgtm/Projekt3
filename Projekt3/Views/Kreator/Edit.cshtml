@@ -1,0 +1,29 @@
+﻿@model Projekt3.Models.Pokoj
+
+<h1>Edytuj pokój</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label for="nazwa">Nazwa</label>
+        <input type="text" class="form-control" id="nazwa" name="Nazwa" value="@Model.Nazwa" required />
+    </div>
+
+    <div class="form-group">
+        <label for="szacowanaWielkosc">Szacowana wielkość (m²)</label>
+        <input type="number" class="form-control" id="szacowanaWielkosc" name="SzacowanaWielkosc"
+               value="@Model.SzacowanaWielkosc" min="1" step="1" required />
+    </div>
+
+    <div class="form-group">
+        <label for="opis">Opis</label>
+        <textarea class="form-control" id="opis" name="Opis">@Model.Opis</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="thumbnailUrl">Thumbnail (URL zdjęcia mapki)</label>
+        <input type="url" class="form-control" id="thumbnailUrl" name="ThumbnailUrl" value="@Model.ThumbnailUrl" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Zapisz</button>
+    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+</form>

@@ -1,0 +1,117 @@
+﻿@model List<Projekt3.Models.Pokoj>
+
+@{
+    ViewData["Title"] = "Kreator";
+}
+
+<h1>Kreator</h1>
+
+<button id="showFormBtn" class="btn btn-primary">Dodaj pomieszczenie</button>
+
+<div id="formDiv" style="display:none; margin-top:20px;">
+    <form method="post">
+        <div class="form-group">
+            <label for="nazwa">Nazwa</label>
+            <input type="text" class="form-control" id="nazwa" name="nazwa" required />
+        </div>
+
+        <div class="form-group">
+            <label for="szacowanaWielkosc">Szacowana wielkość (m²)</label>
+            <input type="number" class="form-control" id="szacowanaWielkosc" name="szacowanaWielkosc" min="1" step="1" required />
+        </div>
+
+        <div class="form-group">
+            <label for="opis">Opis</label>
+            <textarea class="form-control" id="opis" name="opis"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="thumbnailUrl">Thumbnail (URL zdjęcia mapki)</label>
+            <input type="url" class="form-control" id="thumbnailUrl" name="thumbnailUrl" />
+        </div>
+
+        <h4>Punkty lokacji</h4>
+        <div class="form-group">
+            <label for="latitude">Latitude</label>
+            <input type="number" step="any" class="form-control" id="latitude" name="latitude" />
+        </div>
+        <div class="form-group">
+            <label for="longitude">Longitude</label>
+            <input type="number" step="any" class="form-control" id="longitude" name="longitude" />
+        </div>
+        <div class="form-group">
+            <label for="dataPomiaru">Data pomiaru</label>
+            <input type="date" class="form-control" id="dataPomiaru" name="dataPomiaru" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Zastosuj</button>
+    </form>
+</div>
+
+@if (Model.Any())
+{
+    <h2 class="mt-4">Lista pokoi</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nazwa</th>
+                <th>Wielkość</th>
+                <th>Opis</th>
+                <th>Thumbnail</th>
+                <th>Punkty lokacji</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pokoj in Model)
+            {
+                <tr>
+                    <td>@pokoj.Nazwa</td>
+                    <td>@pokoj.SzacowanaWielkosc m²</td>
+                    <td>@pokoj.Opis</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(pokoj.ThumbnailUrl))
+                        {
+                            <img src="@pokoj.ThumbnailUrl" alt="Thumbnail" style="width:100px;" />
+                        }
+                    </td>
+                    <td>
+                        @if (pokoj.PunktyLokacji.Any())
+                        {
+                            <ul>
+                                @foreach (var punkt in pokoj.PunktyLokacji)
+                                {
+                                    <li>
+                                        Lat: @punkt.Latitude,
+                                        Lng: @punkt.Longitude,
+                                        Data: @punkt.DataPomiaru.ToShortDateString()
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span>Brak punktów</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@pokoj.Id" class="btn btn-warning btn-sm">Edytuj</a>
+                        <a asp-action="Delete" asp-route-id="@pokoj.Id" class="btn btn-danger btn-sm"
+                           onclick="return confirm('Czy na pewno chcesz usunąć ten pokój?');">
+                            Usuń
+                        </a>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+    <script>
+        document.getElementById("showFormBtn").addEventListener("click", function () {
+            document.getElementById("formDiv").style.display = "block";
+            this.style.display = "none";
+        });
+    </script>
+}
