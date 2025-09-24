@@ -1,8 +1,8 @@
-﻿@model Projekt3.Models.Pokoj
+@model Projekt3.Models.Pokoj
 
 <h1>Edytuj pokój</h1>
 
-<form method="post">
+<form method="post" id="editForm">
     <div class="form-group">
         <label for="nazwa">Nazwa</label>
         <input type="text" class="form-control" id="nazwa" name="Nazwa" value="@Model.Nazwa" required />
@@ -33,6 +33,7 @@
                     <th>Latitude</th>
                     <th>Longitude</th>
                     <th>Data pomiaru</th>
+                    <th>Akcje</th>
                 </tr>
             </thead>
             <tbody>
@@ -54,6 +55,12 @@
                                    name="PunktyLokacji[@i].DataPomiaru"
                                    value="@Model.PunktyLokacji[i].DataPomiaru.ToString("yyyy-MM-dd")" />
                         </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm" 
+                                    onclick="deletePunkt(@Model.PunktyLokacji[i].Id, @Model.Id)">
+                                Usuń
+                            </button>
+                        </td>
                         <input type="hidden" name="PunktyLokacji[@i].Id" value="@Model.PunktyLokacji[i].Id" />
                         <input type="hidden" name="PunktyLokacji[@i].PokojId" value="@Model.Id" />
                     </tr>
@@ -65,7 +72,67 @@
     {
         <p>Brak punktów lokacji</p>
     }
-
-    <button type="submit" class="btn btn-success">Zapisz</button>
-    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
 </form>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h5>Dodaj nowy punkt lokacji</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-action="AddPunktLokacji">
+            <input type="hidden" name="pokojId" value="@Model.Id" />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="newLatitude">Latitude</label>
+                        <input type="number" step="any" class="form-control" id="newLatitude" name="latitude" required />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="newLongitude">Longitude</label>
+                        <input type="number" step="any" class="form-control" id="newLongitude" name="longitude" required />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="newDataPomiaru">Data pomiaru</label>
+                        <input type="date" class="form-control" id="newDataPomiaru" name="dataPomiaru" 
+                               value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Dodaj punkt lokacji</button>
+        </form>
+    </div>
+</div>
+
+<div class="mt-4">
+    <button type="submit" form="editForm" class="btn btn-success">Zapisz</button>
+    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+</div>
+
+<script>
+function deletePunkt(punktId, pokojId) {
+    if (confirm('Czy na pewno chcesz usunąć ten punkt lokacji?')) {
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '@Url.Action("DeletePunktLokacji", "Kreator")';
+        
+        var punktIdInput = document.createElement('input');
+        punktIdInput.type = 'hidden';
+        punktIdInput.name = 'punktId';
+        punktIdInput.value = punktId;
+        
+        var pokojIdInput = document.createElement('input');
+        pokojIdInput.type = 'hidden';
+        pokojIdInput.name = 'pokojId';
+        pokojIdInput.value = pokojId;
+        
+        form.appendChild(punktIdInput);
+        form.appendChild(pokojIdInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>

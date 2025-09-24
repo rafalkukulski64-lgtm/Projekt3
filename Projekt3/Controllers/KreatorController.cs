@@ -123,13 +123,62 @@ namespace Projekt3.Controllers
         public IActionResult Delete(int id)
         {
             var userId = _userManager.GetUserId(User);
-            var pokoj = _context.Pokoje.FirstOrDefault(p => p.Id == id && p.UserId == userId);
+            var pokoj = _context.Pokoje
+                .Include(p => p.PunktyLokacji)
+                .FirstOrDefault(p => p.Id == id && p.UserId == userId);
+            
             if (pokoj == null) return NotFound();
+
+            if (pokoj.PunktyLokacji.Any())
+            {
+                TempData["ErrorMessage"] = "Nie można usunąć pokoju, ponieważ ma przypisane punkty lokacji. Usuń najpierw wszystkie punkty lokacji.";
+                return RedirectToAction("Index");
+            }
 
             _context.Pokoje.Remove(pokoj);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult DeletePunktLokacji(int punktId, int pokojId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var pokoj = _context.Pokoje.FirstOrDefault(p => p.Id == pokojId && p.UserId == userId);
+            
+            if (pokoj == null) return NotFound();
+
+            var punkt = _context.PunktyLokacji.FirstOrDefault(p => p.Id == punktId && p.PokojId == pokojId);
+            if (punkt != null)
+            {
+                _context.PunktyLokacji.Remove(punkt);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Edit", new { id = pokojId });
+        }
+
+        [HttpPost]
+        public IActionResult AddPunktLokacji(int pokojId, double latitude, double longitude, DateTime dataPomiaru)
+        {
+            var userId = _userManager.GetUserId(User);
+            var pokoj = _context.Pokoje.FirstOrDefault(p => p.Id == pokojId && p.UserId == userId);
+            
+            if (pokoj == null) return NotFound();
+
+            var nowyPunkt = new PunktLokacji
+            {
+                PokojId = pokojId,
+                Latitude = latitude,
+                Longitude = longitude,
+                DataPomiaru = dataPomiaru
+            };
+
+            _context.PunktyLokacji.Add(nowyPunkt);
+            _context.SaveChanges();
+
+            return RedirectToAction("Edit", new { id = pokojId });
         }
     }
 }
