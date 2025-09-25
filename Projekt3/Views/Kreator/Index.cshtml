@@ -18,7 +18,7 @@
 <button id="showFormBtn" class="btn btn-primary">Dodaj pomieszczenie</button>
 
 <div id="formDiv" style="display:none; margin-top:20px;">
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="nazwa">Nazwa</label>
             <input type="text" class="form-control" id="nazwa" name="nazwa" required />
@@ -35,8 +35,9 @@
         </div>
 
         <div class="form-group">
-            <label for="thumbnailUrl">Thumbnail (URL zdjęcia mapki)</label>
-            <input type="url" class="form-control" id="thumbnailUrl" name="thumbnailUrl" />
+            <label for="zdjecie">Zdjęcie pokoju</label>
+            <input type="file" class="form-control" id="zdjecie" name="zdjecie" accept="image/*" />
+            <small class="form-text text-muted">Wybierz zdjęcie pokoju (opcjonalne)</small>
         </div>
 
         <h4>Punkty lokacji</h4>
@@ -66,7 +67,7 @@
                 <th>Nazwa</th>
                 <th>Wielkość</th>
                 <th>Opis</th>
-                <th>Thumbnail</th>
+                <th>Zdjęcia</th>
                 <th>Punkty lokacji</th>
                 <th>Akcje</th>
             </tr>
@@ -79,9 +80,20 @@
                     <td>@pokoj.SzacowanaWielkosc m²</td>
                     <td>@pokoj.Opis</td>
                     <td>
-                        @if (!string.IsNullOrEmpty(pokoj.ThumbnailUrl))
+                        @if (pokoj.Zdjecia != null && pokoj.Zdjecia.Any())
                         {
-                            <img src="@pokoj.ThumbnailUrl" alt="Thumbnail" style="width:100px;" />
+                            @foreach (var zdjecie in pokoj.Zdjecia.Take(3))
+                            {
+                                <img src="~/uploads/@zdjecie.NazwaPliku" alt="Zdjęcie pokoju" style="width:80px; height:60px; object-fit:cover; margin-right:5px;" />
+                            }
+                            @if (pokoj.Zdjecia.Count > 3)
+                            {
+                                <span class="badge badge-info">+@(pokoj.Zdjecia.Count - 3) więcej</span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">Brak zdjęć</span>
                         }
                     </td>
                     <td>

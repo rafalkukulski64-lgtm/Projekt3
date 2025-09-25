@@ -20,8 +20,29 @@
     </div>
 
     <div class="form-group">
-        <label for="thumbnailUrl">Thumbnail (URL zdjęcia mapki)</label>
-        <input type="url" class="form-control" id="thumbnailUrl" name="ThumbnailUrl" value="@Model.ThumbnailUrl" />
+        <label>Zdjęcia pokoju</label>
+        @if (Model.Zdjecia != null && Model.Zdjecia.Any())
+        {
+            <div class="row">
+                @foreach (var zdjecie in Model.Zdjecia)
+                {
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <img src="~/uploads/@zdjecie.NazwaPliku" class="card-img-top" alt="Zdjęcie pokoju" style="height: 150px; object-fit: cover;">
+                            <div class="card-body p-2">
+                                <button type="button" class="btn btn-danger btn-sm w-100" onclick="deleteZdjecie(@zdjecie.Id, @Model.Id)">
+                                    Usuń zdjęcie
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">Brak zdjęć</p>
+        }
     </div>
 
     <h4 class="mt-4">Punkty lokacji</h4>
@@ -73,6 +94,22 @@
         <p>Brak punktów lokacji</p>
     }
 </form>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h5>Dodaj nowe zdjęcie</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-action="AddZdjecie" enctype="multipart/form-data">
+            <input type="hidden" name="pokojId" value="@Model.Id" />
+            <div class="form-group">
+                <label for="noweZdjecie">Wybierz zdjęcie</label>
+                <input type="file" class="form-control" id="noweZdjecie" name="zdjecie" accept="image/*" required />
+            </div>
+            <button type="submit" class="btn btn-success">Dodaj zdjęcie</button>
+        </form>
+    </div>
+</div>
 
 <div class="card mt-3">
     <div class="card-header">
@@ -130,6 +167,29 @@ function deletePunkt(punktId, pokojId) {
         pokojIdInput.value = pokojId;
         
         form.appendChild(punktIdInput);
+        form.appendChild(pokojIdInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function deleteZdjecie(zdjecieId, pokojId) {
+    if (confirm('Czy na pewno chcesz usunąć to zdjęcie?')) {
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '@Url.Action("DeleteZdjecie", "Kreator")';
+        
+        var zdjecieIdInput = document.createElement('input');
+        zdjecieIdInput.type = 'hidden';
+        zdjecieIdInput.name = 'zdjecieId';
+        zdjecieIdInput.value = zdjecieId;
+        
+        var pokojIdInput = document.createElement('input');
+        pokojIdInput.type = 'hidden';
+        pokojIdInput.name = 'pokojId';
+        pokojIdInput.value = pokojId;
+        
+        form.appendChild(zdjecieIdInput);
         form.appendChild(pokojIdInput);
         document.body.appendChild(form);
         form.submit();

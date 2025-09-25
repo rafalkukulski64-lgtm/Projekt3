@@ -24,14 +24,15 @@ namespace Projekt3.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var pokoje = _context.Pokoje
-                .Include(p => p.PunktyLokacji) 
+                .Include(p => p.PunktyLokacji)
+                .Include(p => p.Zdjecia)
                 .Where(p => p.UserId == userId) 
                 .ToList();
             return View(pokoje);
         }
 
         [HttpPost]
-        public IActionResult Index(string nazwa, int szacowanaWielkosc, string opis, string thumbnailUrl,
+        public async Task<IActionResult> Index(string nazwa, int szacowanaWielkosc, string opis, IFormFile? zdjecie,
                                    double? latitude, double? longitude, DateTime? dataPomiaru)
         {
             var userId = _userManager.GetUserId(User);
@@ -41,7 +42,6 @@ namespace Projekt3.Controllers
                 Nazwa = nazwa,
                 SzacowanaWielkosc = szacowanaWielkosc,
                 Opis = opis,
-                ThumbnailUrl = thumbnailUrl,
                 UserId = userId
             }; 
 
@@ -56,7 +56,12 @@ namespace Projekt3.Controllers
             }
 
             _context.Pokoje.Add(pokoj);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
+            if (zdjecie != null && zdjecie.Length > 0)
+            {
+                await SaveZdjecie(zdjecie, pokoj.Id);
+            }
 
             return RedirectToAction("Index");
         }
@@ -66,7 +71,8 @@ namespace Projekt3.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var pokoj = _context.Pokoje
-                .Include(p => p.PunktyLokacji) 
+                .Include(p => p.PunktyLokacji)
+                .Include(p => p.Zdjecia)
                 .FirstOrDefault(p => p.Id == id && p.UserId == userId); 
 
             if (pokoj == null) return NotFound();
@@ -95,7 +101,6 @@ namespace Projekt3.Controllers
             istniejacyPokoj.Nazwa = pokoj.Nazwa;
             istniejacyPokoj.SzacowanaWielkosc = pokoj.SzacowanaWielkosc;
             istniejacyPokoj.Opis = pokoj.Opis;
-            istniejacyPokoj.ThumbnailUrl = pokoj.ThumbnailUrl;
             
             
             if (pokoj.PunktyLokacji != null)
@@ -179,6 +184,75 @@ namespace Projekt3.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Edit", new { id = pokojId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddZdjecie(int pokojId, IFormFile zdjecie)
+        {
+            var userId = _userManager.GetUserId(User);
+            var pokoj = _context.Pokoje.FirstOrDefault(p => p.Id == pokojId && p.UserId == userId);
+            
+            if (pokoj == null) return NotFound();
+
+            if (zdjecie != null && zdjecie.Length > 0)
+            {
+                await SaveZdjecie(zdjecie, pokojId);
+            }
+
+            return RedirectToAction("Edit", new { id = pokojId });
+        }
+
+        [HttpPost]
+        public IActionResult DeleteZdjecie(int zdjecieId, int pokojId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var pokoj = _context.Pokoje.FirstOrDefault(p => p.Id == pokojId && p.UserId == userId);
+            
+            if (pokoj == null) return NotFound();
+
+            var zdjecie = _context.PokojZdjecia.FirstOrDefault(z => z.Id == zdjecieId && z.PokojId == pokojId);
+            if (zdjecie != null)
+            {
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", zdjecie.NazwaPliku);
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+
+                _context.PokojZdjecia.Remove(zdjecie);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Edit", new { id = pokojId });
+        }
+
+        private async Task SaveZdjecie(IFormFile zdjecie, int pokojId)
+        {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var fileExtension = Path.GetExtension(zdjecie.FileName);
+            var fileName = $"{Guid.NewGuid()}{fileExtension}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await zdjecie.CopyToAsync(stream);
+            }
+
+            var pokojZdjecie = new PokojZdjecie
+            {
+                PokojId = pokojId,
+                NazwaPliku = fileName,
+                SciezkaPliku = filePath,
+                DataDodania = DateTime.Now
+            };
+
+            _context.PokojZdjecia.Add(pokojZdjecie);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -11,15 +11,12 @@ namespace Projekt3.Models
         public int SzacowanaWielkosc { get; set; }
         public string Opis { get; set; } = string.Empty;
         
-        public string? ThumbnailUrl { get; set; }
-        
-        
         public string? UserId { get; set; }
-        
         
         [ForeignKey("UserId")]
         public IdentityUser? User { get; set; }
         
         public List<PunktLokacji> PunktyLokacji { get; set; } = new();
+        public List<PokojZdjecie> Zdjecia { get; set; } = new();
     }
 }
