@@ -18,50 +18,83 @@
 <button id="showFormBtn" class="btn btn-primary">Dodaj pomieszczenie</button>
 
 <div id="formDiv" style="display:none; margin-top:20px;">
-    <form method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="nazwa">Nazwa</label>
-            <input type="text" class="form-control" id="nazwa" name="nazwa" required />
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Nowe pomieszczenie</h4>
         </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="nazwa" class="form-label">Nazwa</label>
+                            <input type="text" class="form-control" id="nazwa" name="nazwa" required />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="szacowanaWielkosc" class="form-label">Szacowana wielkość (m²)</label>
+                            <input type="number" class="form-control" id="szacowanaWielkosc" name="szacowanaWielkosc" min="1" step="1" required />
+                        </div>
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <label for="szacowanaWielkosc">Szacowana wielkość (m²)</label>
-            <input type="number" class="form-control" id="szacowanaWielkosc" name="szacowanaWielkosc" min="1" step="1" required />
-        </div>
+                <div class="form-group mb-3">
+                    <label for="opis" class="form-label">Opis</label>
+                    <textarea class="form-control" id="opis" name="opis" rows="3"></textarea>
+                </div>
 
-        <div class="form-group">
-            <label for="opis">Opis</label>
-            <textarea class="form-control" id="opis" name="opis"></textarea>
-        </div>
+                <div class="form-group mb-4">
+                    <label for="zdjecie" class="form-label">Zdjęcie pokoju</label>
+                    <input type="file" class="form-control" id="zdjecie" name="zdjecie" accept="image/*" />
+                    <small class="form-text text-muted">Wybierz zdjęcie pokoju (opcjonalne)</small>
+                </div>
 
-        <div class="form-group">
-            <label for="zdjecie">Zdjęcie pokoju</label>
-            <input type="file" class="form-control" id="zdjecie" name="zdjecie" accept="image/*" />
-            <small class="form-text text-muted">Wybierz zdjęcie pokoju (opcjonalne)</small>
-        </div>
+                <div class="card border-info mb-3">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Punkty lokacji</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="latitude" class="form-label">Latitude</label>
+                                    <input type="number" step="any" class="form-control" id="latitude" name="latitude" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="longitude" class="form-label">Longitude</label>
+                                    <input type="number" step="any" class="form-control" id="longitude" name="longitude" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="dataPomiaru" class="form-label">Data pomiaru</label>
+                                    <input type="date" class="form-control" id="dataPomiaru" name="dataPomiaru" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <h4>Punkty lokacji</h4>
-        <div class="form-group">
-            <label for="latitude">Latitude</label>
-            <input type="number" step="any" class="form-control" id="latitude" name="latitude" />
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">Zastosuj</button>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="longitude">Longitude</label>
-            <input type="number" step="any" class="form-control" id="longitude" name="longitude" />
-        </div>
-        <div class="form-group">
-            <label for="dataPomiaru">Data pomiaru</label>
-            <input type="date" class="form-control" id="dataPomiaru" name="dataPomiaru" />
-        </div>
-
-        <button type="submit" class="btn btn-success">Zastosuj</button>
-    </form>
+    </div>
 </div>
 
 @if (Model.Count > 0)
 {
-    <h2 class="mt-4">Lista pokoi</h2>
-    <table class="table table-striped">
+    <div class="card mt-4">
+        <div class="card-header bg-success text-white">
+            <h2 class="mb-0">Lista pokoi</h2>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0">
         <thead>
             <tr>
                 <th>Nazwa</th>
@@ -124,8 +157,11 @@
                     </td>
                 </tr>
             }
-        </tbody>
-    </table>
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 }
 
 @section Scripts {

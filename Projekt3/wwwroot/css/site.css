@@ -9,7 +9,7 @@ html {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem blue;
 }
 
 html {
@@ -19,4 +19,136 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+
+.btn {
+    border-radius: 8px;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px lightgray;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px gray;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, blue, darkblue);
+    border-color: blue;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, darkblue, navy);
+    border-color: darkblue;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, green, darkgreen);
+    border-color: green;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, darkgreen, forestgreen);
+    border-color: darkgreen;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, gold, orange);
+    border-color: gold;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, orange, darkorange);
+    border-color: orange;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, red, darkred);
+    border-color: red;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, darkred, maroon);
+    border-color: darkred;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, gray, darkgray);
+    border-color: gray;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, darkgray, dimgray);
+    border-color: darkgray;
+}
+
+.card {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px lightgray;
+}
+
+.form-control {
+  border-radius: 5px;
+}
+
+.table {
+  background-color: white;
+  border-radius: 5px;
+}
+
+.alert {
+  border-radius: 5px;
+}
+
+
+.navbar-nav .nav-link:not(.btn-link) {
+    border-radius: 8px;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+    margin: 0 4px;
+    text-decoration: none;
+}
+
+
+.navbar-nav .nav-link[href*="Home"]:not(.btn-link) {
+    background: lightblue;
+    border: 1px solid blue;
+    color: darkblue !important;
+}
+
+.navbar-nav .nav-link[href*="Home"]:not(.btn-link):hover {
+    transform: translateY(-2px);
+    background: blue;
+    color: white !important;
+    box-shadow: 0 4px 8px lightgray;
+}
+
+
+.navbar-nav .nav-link[href*="Privacy"]:not(.btn-link) {
+    background: lightsalmon;
+    border: 1px solid orange;
+    color: black !important;
+}
+
+.navbar-nav .nav-link[href*="Privacy"]:not(.btn-link):hover {
+    transform: translateY(-2px);
+    background: orange;
+    color: white !important;
+    box-shadow: 0 4px 8px lightgray;
+}
+
+
+.navbar-nav .nav-link[href*="Kreator"]:not(.btn-link) {
+    background: lightgreen;
+    border: 1px solid green;
+    color: darkgreen !important;
+}
+
+.navbar-nav .nav-link[href*="Kreator"]:not(.btn-link):hover {
+    transform: translateY(-2px);
+    background: green;
+    color: white !important;
+    box-shadow: 0 4px 8px lightgray;
 }
